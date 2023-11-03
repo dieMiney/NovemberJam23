@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class CamBobbing : MonoBehaviour
 {
-    public float bobbingSpeed = 0.05f;
-    public float bobbingAmount = 0.35f;
-    public float midpoint = 2.0f;
+    [SerializeField] private float bobbingSpeed = 0.05f;
+    [SerializeField] private float bobbingAmount = 0.35f;
+    [SerializeField] private float midpoint = 2.0f;
+
+    [SerializeField] private float speedMultiplier = 1.8f; // Multiplier for running speed
+    [SerializeField] private float amountMultiplier = 1.08f;
 
     private float timer = 0.0f;
     private CharacterController controller;
@@ -18,11 +21,16 @@ public class CamBobbing : MonoBehaviour
 
     void Update()
     {
-        if(controller.isGrounded)
+        if (controller.isGrounded)
         {
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
+            bool isRunning = Input.GetKey(KeyCode.LeftShift); // Check if running
+
+            // Apply multiplier if running
+            float currentBobbingSpeed = isRunning ? bobbingSpeed * speedMultiplier : bobbingSpeed;
+            float currentBobbingAmount = isRunning ? bobbingAmount * amountMultiplier : bobbingAmount;
 
             Vector3 cSharpPosition = transform.localPosition;
 
@@ -33,7 +41,7 @@ public class CamBobbing : MonoBehaviour
             else
             {
                 waveslice = Mathf.Sin(timer);
-                timer = timer + bobbingSpeed;
+                timer = timer + currentBobbingSpeed;
                 if (timer > Mathf.PI * 2)
                 {
                     timer = timer - (Mathf.PI * 2);
@@ -42,7 +50,7 @@ public class CamBobbing : MonoBehaviour
 
             if (waveslice != 0)
             {
-                float translateChange = waveslice * bobbingAmount;
+                float translateChange = waveslice * currentBobbingAmount;
                 float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
                 totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
                 translateChange = totalAxes * translateChange;
@@ -54,6 +62,10 @@ public class CamBobbing : MonoBehaviour
             }
 
             transform.localPosition = cSharpPosition;
+        }
+        else
+        {
+            timer = 0.0f; // Reset timer when the player is not grounded
         }
     }
 }

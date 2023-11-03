@@ -770,6 +770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 798701208}
   movingSpeed: 12
+  runningMultiplier: 1.8
   gravity: -9.81
   jumpHeight: 3
   groundCheck: {fileID: 257918338}
@@ -3053,6 +3054,8 @@ MonoBehaviour:
   bobbingSpeed: 0.02
   bobbingAmount: 0.2
   midpoint: 2
+  speedMultiplier: 1.8
+  amountMultiplier: 1.08
 --- !u!1 &1196502735
 GameObject:
   m_ObjectHideFlags: 0

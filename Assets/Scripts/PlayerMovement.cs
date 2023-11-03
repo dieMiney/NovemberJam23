@@ -6,23 +6,18 @@ using UnityEngine.Rendering;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public CharacterController controller;
-    public float movingSpeed = 12f;
-    public float gravity = -9.81f;
-    public float jumpHeight = 3f;
+    [SerializeField] private CharacterController controller;
+    [SerializeField] private float movingSpeed = 12f;
+    [SerializeField] private float runningMultiplier = 1.8f;
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float jumpHeight = 3f;
 
-    public Transform groundCheck;
-    public float groundDistance = 0.4f;
-    public LayerMask groundMask;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundDistance = 0.4f;
+    [SerializeField] private LayerMask groundMask;
 
-    Vector3 velocity;
-    bool isGrounded;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private Vector3 velocity;
+    private bool isGrounded;
 
     // Update is called once per frame
     void Update()
@@ -40,7 +35,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        controller.Move(move * movingSpeed * Time.deltaTime);
+        //Check if player is running
+        float currentSpeed = movingSpeed;
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed *= runningMultiplier;
+        }
+
+        controller.Move(move * currentSpeed * Time.deltaTime);
 
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
