@@ -11,6 +11,8 @@ public class CamBobbing : MonoBehaviour
     [SerializeField] private float speedMultiplier = 1.8f; // Multiplier for running speed
     [SerializeField] private float amountMultiplier = 1.08f;
 
+    [SerializeField] private PlayerMovement playerMovement;
+
     private float timer = 0.0f;
     private CharacterController controller;
 
@@ -21,12 +23,12 @@ public class CamBobbing : MonoBehaviour
 
     void Update()
     {
-        if (controller.isGrounded)
+        if (controller.isGrounded && !playerMovement.isCrawling)
         {
             float waveslice = 0.0f;
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
-            bool isRunning = Input.GetKey(KeyCode.LeftShift); // Check if running
+            bool isRunning = Input.GetKey(KeyCode.LeftShift) && !playerMovement.isCrawling; // Check if running
 
             // Apply multiplier if running
             float currentBobbingSpeed = isRunning ? bobbingSpeed * speedMultiplier : bobbingSpeed;

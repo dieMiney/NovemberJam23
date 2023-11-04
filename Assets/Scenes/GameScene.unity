@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2901046
 Transform:
   m_ObjectHideFlags: 0
@@ -150,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 2901045}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0}
   m_LocalScale: {x: 1.2, y: 1.8, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -175,7 +175,8 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials: []
+  m_Materials:
+  - {fileID: 2100000, guid: 25f0b68dfb6eccd4fa4c12abe34e36a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -230,7 +231,7 @@ Transform:
   m_GameObject: {fileID: 257918337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.75, z: 0}
+  m_LocalPosition: {x: 0, y: -0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -731,13 +732,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 3.8
+  m_Height: 1.8
   m_Radius: 0.6
   m_SlopeLimit: 45
   m_StepOffset: 0.7
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.6, z: 0}
 --- !u!4 &798701209
 Transform:
   m_ObjectHideFlags: 0
@@ -747,8 +748,8 @@ Transform:
   m_GameObject: {fileID: 798701207}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 1.12, z: 0}
+  m_LocalScale: {x: 1.2, y: 1.8, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2901046}
@@ -768,12 +769,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efd1575cd4e92524da29bf54378db2a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCrawling: 0
+  isTransitioning: 0
   controller: {fileID: 798701208}
   movingSpeed: 12
   runningMultiplier: 1.8
+  crawlingMultiplier: 0.5
   gravity: -9.81
   jumpHeight: 3
+  normalCenter: {x: 0, y: 1.1, z: 0}
+  crawlingCenter: {x: 0, y: 0.5, z: 0}
   groundCheck: {fileID: 257918338}
+  firstPersonBody: {fileID: 798701209}
   groundDistance: 0.4
   groundMask:
     serializedVersion: 2
@@ -3019,7 +3026,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6000004, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3056,6 +3063,7 @@ MonoBehaviour:
   midpoint: 2
   speedMultiplier: 1.8
   amountMultiplier: 1.08
+  playerMovement: {fileID: 798701210}
 --- !u!1 &1196502735
 GameObject:
   m_ObjectHideFlags: 0
