@@ -1,0 +1,34 @@
+{
+    "name": "TextInput",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "7398edbb-b312-4863-a10f-aa269444e243",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "079ce918-4303-4d56-80d8-4e3ec2856202",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "70b7017b-fae5-48ae-88c0-32d6a904d930",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
