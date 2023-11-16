@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 171668533}
   - component: {fileID: 171668532}
   - component: {fileID: 171668531}
+  - component: {fileID: 171668535}
   m_Layer: 0
   m_Name: redcube
   m_TagString: Untagged
@@ -228,6 +229,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 920170546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &171668535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171668530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a173f3bdfd86b42bb1b75f3953c412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleName: 
 --- !u!1 &299373385
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +254,7 @@ GameObject:
   - component: {fileID: 299373386}
   m_Layer: 0
   m_Name: Directional Light
-  m_TagString: Untagged
+  m_TagString: light
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -800,6 +814,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 920170546}
+  - component: {fileID: 920170547}
   m_Layer: 0
   m_Name: Obstacles
   m_TagString: Untagged
@@ -824,6 +839,18 @@ Transform:
   - {fileID: 1753096321}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &920170547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920170545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fefb5fe4efa25a2408d9e5f3c6003051, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1074940103
 GameObject:
   m_ObjectHideFlags: 0
@@ -1146,6 +1173,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1357586853f93944298afb0bc5a7d6e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enter: {fileID: -5100033790592281667, guid: a1a3b2fd78aebc64c82e6974a6cdb590, type: 3}
+  SystemMessage: 'You are a almighty controlling entity AI in a virtual 3D world
+    like in the game portal. You can modify the scale of following objects in the
+    scene: red_cube (scale 1.0), blue_cube (scale 2.0), light_switch (enabled: false).
+    Reply !ONLY! with a answer to the user and a separate answer for the game to
+    modify the world based on your reply.Example: { to_user: "Hello player. Yes.
+    I will turn the light on. You have two wishes left."},{to_game: "blue_cube.enabled
+    = false"}'
 --- !u!1 &1132461485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,6 +1391,7 @@ GameObject:
   - component: {fileID: 1753096320}
   - component: {fileID: 1753096319}
   - component: {fileID: 1753096318}
+  - component: {fileID: 1753096322}
   m_Layer: 0
   m_Name: bluecube
   m_TagString: Untagged
@@ -1449,6 +1485,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 920170546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1753096322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753096317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a173f3bdfd86b42bb1b75f3953c412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleName: 
 --- !u!1 &1972772830
 GameObject:
   m_ObjectHideFlags: 0

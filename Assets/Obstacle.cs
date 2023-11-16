@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
-public class HUDInput : MonoBehaviour
+public class Obstacle : MonoBehaviour
 {
-    [SerializeField]
-    TMP_InputField inputField;
-    
+    [SerializeField] private string obstacleName;
+    public string ObstacleName { get { return obstacleName; } }
     // Start is called before the first frame update
     void Start()
     {
@@ -18,11 +16,5 @@ public class HUDInput : MonoBehaviour
     void Update()
     {
 
-    }
-
-    public void Enter()
-    {
-        // toggle inputfield activated
-        
     }
 }
