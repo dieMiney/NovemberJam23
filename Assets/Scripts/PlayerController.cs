@@ -26,18 +26,13 @@ public class PlayerController : MonoBehaviour
 
         Vector2 inputVector = playerInput.GetMovementVectorNormalized();
 
-        //Eingaben auf X und Z Achse ummoddeln und auf 3d Vector
-        Vector3 moveDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+        Vector3 moveDirection = transform.right * inputVector.x + transform.forward * inputVector.y;
+        moveDirection.y = 0; // Ignoriert die Y-Achse für Bewegung auf der Ebene
 
         transform.position += moveDirection * movingSpeed * Time.deltaTime;
-        //Rotation des Players zur Movement Richtung
-        //transform.forward = moveDirection;
-
+   
         isMoving = moveDirection != Vector3.zero;
 
-        float rotateSpeed = 10f;
-        //Rotation Smoother machen
-        transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
 
         //JumpLogic
         if (playerInput.IsJumping() && isGrounded)
@@ -49,10 +44,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Playground"))
-        {
-            isGrounded = true;
-        }
+        isGrounded = true;
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        isGrounded = false;
     }
 
     public bool IsMoving()
