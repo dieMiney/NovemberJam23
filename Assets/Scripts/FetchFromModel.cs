@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
+using System;
 public class ModelResponse
 {
     public Choice[] choices;
@@ -113,7 +115,8 @@ public class FetchFromModel : MonoBehaviour
         StartCoroutine(MakeRequest());
     }
 
-    public string SystemMessage = "";
+    public string SystemMessage = "You are a helpful AI in a virtual game world. You can modify the following GAME OBJECTs: ";
+    private string SystemMessageEnd = "You ALWAYS respond to the user and append the action you carried out in the game world FOR THE SYSTEM, which looks something like this in JSON { objects: \"GAME OBJECT\", operation: \"SCALE | ROTATE | TRANSLATE\", value: INT }";
 
     IEnumerator MakeRequest()
     {
@@ -216,50 +219,36 @@ public class FetchFromModel : MonoBehaviour
         return null;
     }
 
-    private static bool parseCommand(ModelResponse response)
-    {
-        // parse response for { } pattern. if it includes "directional_light.enabled = false" disable gameobject
-        var command = response.choices[0].message.content;
-        var commandStart = command.IndexOf("{");
-        var commandEnd = command.IndexOf("}");
-        var action = command.Substring(commandStart + 1, commandEnd - commandStart - 1);
-        var targetObject = action.Split(".")[0].Trim();
-        var targetProperty = action.Split(".")[1].Trim();
-        var targetValue = action.Split("=").ElementAt(1).Trim();
-        // TODO: Error handling if targetObject not present in Obstacles.Children, redo request
-        Debug.Log(targetObject);
-        Debug.Log(targetProperty);
-        Debug.Log(targetValue);
-        if (targetObject == action.Trim() || targetProperty == action.Trim() || targetValue == action.Trim())
-        {
-            // no action
-            return false;
-        }
-        return true;
-    }
 
     // Start is called before the first frame update
     void Start()
     {
-        chatLog.Add(new Message { role = "system", content = SystemMessage });
+        Debug.Log(obstacles.Children.Count);
+        var objectNames = obstacles.Children.Select(x => "\"" + x.ObstacleName + "\"").ToArray();
+        string objectNamesString = string.Join(", ", objectNames);
+        var finalSysteMessage = SystemMessage + objectNamesString + SystemMessageEnd;
+        Debug.Log("system message: " + finalSysteMessage);
+        chatLog.Add(new Message { role = "system", content = finalSysteMessage });
         chatLog.Add(new Message { role = "user", content = "Hello. Please move the blue cube a little bit and scale it by half." });
         chatLog.Add(new Message { role = "assistant", content = "I can only do one thing, but here: Poof! Let the blue float along! { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
 
         // GetExchangeRates();
         _enter.action.performed += ctx =>
         {
-            Debug.Log(inputFieldObject.active);
             switch (inputFieldObject.active)
             {
                 case true:
-                    chatLog.Add(new Message { role = "user", content = inputFieldObject.GetComponent<TMP_InputField>().text });
-                    SendModelRequest();
-                    inputFieldObject.GetComponent<TMP_InputField>().text = "";
+                    if (inputFieldObject.GetComponent<TMP_InputField>().text != "")
+                    {
+
+                        chatLog.Add(new Message { role = "user", content = inputFieldObject.GetComponent<TMP_InputField>().text });
+                        SendModelRequest();
+                        inputFieldObject.GetComponent<TMP_InputField>().text = "";
+                    }
                     inputFieldObject.SetActive(false);
 
                     break;
                 case false:
-                    Debug.Log("Set active");
                     inputFieldObject.SetActive(true);
                     inputFieldObject.GetComponent<TMP_InputField>().ActivateInputField();
                     break;

@@ -9,11 +9,12 @@ public class Obstacles : MonoBehaviour
     public List<Obstacle> Children { get { return children; } }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         children = new List<Obstacle>();
         foreach (Transform child in transform)
         {
+            Debug.Log(child.name);
             children.Add(child.GetComponent<Obstacle>());
         }
     }
