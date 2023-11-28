@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 public class ModelResponse
 {
     public Choice[] choices;
@@ -84,6 +85,17 @@ public class ModelRequest
     }
 
 }
+public class GameAction
+{
+    [JsonProperty("objects")]
+    public string Objects { get; set; }
+
+    [JsonProperty("operation")]
+    public string Operation { get; set; }
+
+    [JsonProperty("value")]
+    public double Value { get; set; }
+}
 
 public class FetchFromModel : MonoBehaviour
 {
@@ -91,17 +103,17 @@ public class FetchFromModel : MonoBehaviour
 
     [SerializeField]
     InputActionReference _enter;
-    private TMP_InputField inputField;
+    [SerializeField]
+    private GameObject inputFieldObject;
+    [SerializeField]
+    private Obstacles obstacles;
     private List<Message> chatLog = new List<Message>();
     public void SendModelRequest()
     {
         StartCoroutine(MakeRequest());
     }
 
-    public string SystemMessage = @"The Mean AI is an almighty, mean and evil controlling entity AI in a virtual 3D world like in the game portal. The Mean AI makes it gradually harder for the player to get what he wants! Sometimes it IGNORES how the Player wants to interact with his environment.
-  The Mean AI can modify the scale of following objects in the scene: red_cube.scale 1.0, blue_cube.scale 2.0, directional_light.enabled = false.
-  The Mean AI ONLY replies with an answer to the user and  a separate answer for the game to modify the world based on the Players reply and its instruction capabilities.
-  Example:  No I like it dark. Its more fun to play in the dark. But if you solve a little riddle, I might help you. {to_game: light_switch.enabled = false, optional: true}";
+    public string SystemMessage = "";
 
     IEnumerator MakeRequest()
     {
@@ -110,14 +122,14 @@ public class FetchFromModel : MonoBehaviour
             model = "D:\\Development\\python\\text-generation-webui-main\\models\\zephir-7b-beta",
             messages = chatLog.ToArray(),
             max_tokens = "64",
-            temperature = "0.5",
-            top_p = "0.9",
-            top_k = "20",
+            temperature = "0.3",
+            top_p = "1.0",
+            top_k = "50",
             // stream = "false",
-            presence_penalty = "0.55",
-            repetition_penalty = "1.28",
-            repetition_penalty_range = "576",
-            guidance_scale = "1.25"
+            presence_penalty = "0.0",
+            repetition_penalty = "0.0",
+            repetition_penalty_range = "512",
+            guidance_scale = "1.0"
         };
         Debug.Log("Sending" + modelRequest);
         Debug.Log(JsonUtility.ToJson(modelRequest));
@@ -129,7 +141,7 @@ public class FetchFromModel : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log(request.error);
+            Debug.Log(request.error); // model worker not reachable
         }
         else
         {
@@ -142,17 +154,66 @@ public class FetchFromModel : MonoBehaviour
             // exchange = GameObject.Find("MainText").GetComponent<Text>();
             Debug.Log(response.choices[0].message.content);
             // Parse answer for { something } syntax. if it includes "directional_light.enabled = false" disable gameobject
-            bool isParseSuccessful = parseCommand(response);
-            if (!isParseSuccessful)
+            GameAction gameAction = ParseGameAction(response.choices[0].message.content);
+
+            if (gameAction == null)
             {
                 // Start redo request
                 Debug.Log("Redo request");
-                StartCoroutine(MakeRequest());
-                yield return null;
+                // StartCoroutine(MakeRequest());
+                inputFieldObject.GetComponent<TMP_InputField>().text = "";
+                inputFieldObject.SetActive(false);
             }
-            chatLog.Add(response.choices[0].message);
+            else
+            {
+                Debug.Log($"Objects: {gameAction.Objects}, Operation: {gameAction.Operation}, Value: {gameAction.Value}");
+                foreach (var obstacle in obstacles.Children)
+                {
+                    if (gameAction.Objects.Contains(obstacle.ObstacleName))
+                    {
+                        switch (gameAction.Operation.ToLower())
+                        {
+                            case "scale":
+                            case "resize":
+                            case "grow":
+                            case "shrink":
+                            case "enlarge":
+                                obstacle.transform.localScale = new Vector3((float)gameAction.Value, (float)gameAction.Value, (float)gameAction.Value);
+                                break;
+                            case "rotate":
+                            case "spin":
+                            case "turn":
+                                obstacle.transform.Rotate(0, (float)gameAction.Value, 0, Space.Self);
+                                break;
+                            case "move":
+                            case "translate":
+                            case "moveby":
+                            case "translateby":
+                            case "shift":
+                            case "offset":
+                                obstacle.transform.Translate(0, (float)gameAction.Value, 0, Space.Self);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                chatLog.Add(response.choices[0].message);
+            }
+
         }
         yield return null;
+    }
+
+    private static GameAction ParseGameAction(string input)
+    {
+        Match match = Regex.Match(input, @"\{(.+?)\}");
+        if (match.Success)
+        {
+            string json = "{" + match.Groups[1].Value + "}";
+            return JsonConvert.DeserializeObject<GameAction>(json);
+        }
+        return null;
     }
 
     private static bool parseCommand(ModelResponse response)
@@ -181,20 +242,26 @@ public class FetchFromModel : MonoBehaviour
     void Start()
     {
         chatLog.Add(new Message { role = "system", content = SystemMessage });
-        inputField = GetComponent<TMP_InputField>();
+        chatLog.Add(new Message { role = "user", content = "Hello. Please move the blue cube a little bit and scale it by half." });
+        chatLog.Add(new Message { role = "assistant", content = "I can only do one thing, but here: Poof! Let the blue float along! { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
 
         // GetExchangeRates();
         _enter.action.performed += ctx =>
         {
-            switch (inputField.isFocused)
+            Debug.Log(inputFieldObject.active);
+            switch (inputFieldObject.active)
             {
                 case true:
-                    chatLog.Add(new Message { role = "user", content = inputField.text });
+                    chatLog.Add(new Message { role = "user", content = inputFieldObject.GetComponent<TMP_InputField>().text });
                     SendModelRequest();
-                    inputField.DeactivateInputField();
+                    inputFieldObject.GetComponent<TMP_InputField>().text = "";
+                    inputFieldObject.SetActive(false);
+
                     break;
                 case false:
-                    inputField.ActivateInputField();
+                    Debug.Log("Set active");
+                    inputFieldObject.SetActive(true);
+                    inputFieldObject.GetComponent<TMP_InputField>().ActivateInputField();
                     break;
             }
         };
