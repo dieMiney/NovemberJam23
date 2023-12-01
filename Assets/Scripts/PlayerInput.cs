@@ -13,12 +13,12 @@ public class PlayerInput : MonoBehaviour
         playerInputActions = new TextInput();
         playerInputActions.Player.Enable();
 
-        // Event-Listener für die Texteingabe
+        // Event-Listener fï¿½r die Texteingabe
         playerInputActions.Player.Enter.started += _ => StartTextEntry();
         playerInputActions.Player.Enter.canceled += _ => EndTextEntry();
     }
-   
-    // Diese Methode gibteinen normalisierten Bewegungsvektor basierend auf den Spieler-Eingaben zurück.
+
+    // Diese Methode gibteinen normalisierten Bewegungsvektor basierend auf den Spieler-Eingaben zurï¿½ck.
     public Vector2 GetMovementVectorNormalized()
     {
         // Liest den Bewegungsvektor, der durch die Spieler-Eingaben bestimmt wird.
@@ -26,7 +26,7 @@ public class PlayerInput : MonoBehaviour
 
         // Normalisiert den Vektor, um sicherzustellen, dass die Bewegungsgeschwindigkeit konstant bleibt.
         inputVector = inputVector.normalized;
-        Debug.Log(inputVector); // Gibt den Vektor zur Überprüfung in die Konsole aus.
+        // Debug.Log(inputVector); // Gibt den Vektor zur ï¿½berprï¿½fung in die Konsole aus.
         return inputVector;
     }
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using System;
+using Michsky.MUIP;
 public class ModelResponse
 {
     public Choice[] choices;
@@ -109,13 +110,16 @@ public class FetchFromModel : MonoBehaviour
     private GameObject inputFieldObject;
     [SerializeField]
     private Obstacles obstacles;
+
+    [SerializeField]
+    private NotificationManager notificationManager;
     private List<Message> chatLog = new List<Message>();
     public void SendModelRequest()
     {
         StartCoroutine(MakeRequest());
     }
 
-    public string SystemMessage = "You are a helpful AI in a virtual game world. You can modify the following GAME OBJECTs: ";
+    private string SystemMessage = "You are a helpful AI in a virtual game world. You can modify the following GAME OBJECTs: ";
     private string SystemMessageEnd = "You ALWAYS respond to the user and append the action you carried out in the game world FOR THE SYSTEM, which looks something like this in JSON { objects: \"GAME OBJECT\", operation: \"SCALE | ROTATE | TRANSLATE\", value: INT }";
 
     IEnumerator MakeRequest()
@@ -125,14 +129,14 @@ public class FetchFromModel : MonoBehaviour
             model = "D:\\Development\\python\\text-generation-webui-main\\models\\zephir-7b-beta",
             messages = chatLog.ToArray(),
             max_tokens = "64",
-            temperature = "0.3",
+            temperature = "0.6",
             top_p = "1.0",
             top_k = "50",
             // stream = "false",
             presence_penalty = "0.0",
             repetition_penalty = "0.0",
             repetition_penalty_range = "512",
-            guidance_scale = "1.0"
+            guidance_scale = "1.1"
         };
         Debug.Log("Sending" + modelRequest);
         Debug.Log(JsonUtility.ToJson(modelRequest));
@@ -159,6 +163,29 @@ public class FetchFromModel : MonoBehaviour
             // Parse answer for { something } syntax. if it includes "directional_light.enabled = false" disable gameobject
             GameAction gameAction = ParseGameAction(response.choices[0].message.content);
 
+            // remove { something } from answer
+            var cleanedResponse = Regex.Replace(response.choices[0].message.content, @"\{(.+?)\}", "");
+
+            UnityWebRequest requestSetSentence = UnityWebRequest.Post("http://127.0.0.1:8002/voice", JsonConvert.SerializeObject(new { sentence = cleanedResponse }), "application/json");
+            yield return requestSetSentence.SendWebRequest();
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://127.0.0.1:8002/voice", AudioType.WAV))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.result == UnityWebRequest.Result.ConnectionError)
+                {
+                    Debug.Log(www.error);
+                }
+                else
+                {
+                    AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
+                    // play audio
+                    AudioSource audioSource = GetComponent<AudioSource>();
+                    audioSource.clip = myClip;
+                    audioSource.Play();
+                }
+            }
+
             if (gameAction == null)
             {
                 // Start redo request
@@ -169,6 +196,9 @@ public class FetchFromModel : MonoBehaviour
             }
             else
             {
+                notificationManager.title = "AI";
+                notificationManager.description = cleanedResponse;
+                notificationManager.OpenNotification();
                 Debug.Log($"Objects: {gameAction.Objects}, Operation: {gameAction.Operation}, Value: {gameAction.Value}");
                 foreach (var obstacle in obstacles.Children)
                 {
@@ -201,8 +231,8 @@ public class FetchFromModel : MonoBehaviour
                         }
                     }
                 }
-                chatLog.Add(response.choices[0].message);
             }
+            chatLog.Add(response.choices[0].message);
 
         }
         yield return null;
@@ -223,14 +253,16 @@ public class FetchFromModel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(obstacles.Children.Count);
+
+        inputFieldObject.SetActive(false);
+        // Debug.Log(obstacles.Children.Count);
         var objectNames = obstacles.Children.Select(x => "\"" + x.ObstacleName + "\"").ToArray();
         string objectNamesString = string.Join(", ", objectNames);
         var finalSysteMessage = SystemMessage + objectNamesString + SystemMessageEnd;
         Debug.Log("system message: " + finalSysteMessage);
         chatLog.Add(new Message { role = "system", content = finalSysteMessage });
         chatLog.Add(new Message { role = "user", content = "Hello. Please move the blue cube a little bit and scale it by half." });
-        chatLog.Add(new Message { role = "assistant", content = "I can only do one thing, but here: Poof! Let the blue float along! { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
+        chatLog.Add(new Message { role = "assistant", content = "I can only do one thing, but here: Watch and learn. Let the blue cube move! { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
 
         // GetExchangeRates();
         _enter.action.performed += ctx =>
