@@ -361,7 +361,7 @@ GameObject:
   - component: {fileID: 9120071330557718348}
   m_Layer: 0
   m_Name: PlayerObj
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -612,7 +612,7 @@ MonoBehaviour:
   closeOnClick: 0
   useStacking: 0
   isOn: 0
-  startBehaviour: 1
+  startBehaviour: 0
   closeBehaviour: 1
   onOpen:
     m_PersistentCalls:
@@ -628,7 +628,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2672180057358653245}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -945,7 +945,7 @@ GameObject:
   - component: {fileID: 7693022542826321541}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

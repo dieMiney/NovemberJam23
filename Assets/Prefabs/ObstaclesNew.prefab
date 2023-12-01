@@ -250,7 +250,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5460
+  m_VersionIndex: 5463
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -524,8 +524,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -597,6 +597,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7361298934625162577}
     m_Modifications:
+    - target: {fileID: 19956200658129139, guid: af97795a121e9f143bd38509495766a8, type: 3}
+      propertyPath: m_VersionIndex
+      value: 2342
+      objectReference: {fileID: 0}
     - target: {fileID: 797476838300483796, guid: af97795a121e9f143bd38509495766a8, type: 3}
       propertyPath: m_Name
       value: green pacman
@@ -656,10 +660,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 797476838300483796, guid: af97795a121e9f143bd38509495766a8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4327916385045096165}
   m_SourcePrefab: {fileID: 100100000, guid: af97795a121e9f143bd38509495766a8, type: 3}
 --- !u!4 &342546422274743335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3793108128509381672, guid: af97795a121e9f143bd38509495766a8, type: 3}
   m_PrefabInstance: {fileID: 3486678472522633231}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4283520750594691291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 797476838300483796, guid: af97795a121e9f143bd38509495766a8, type: 3}
+  m_PrefabInstance: {fileID: 3486678472522633231}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4327916385045096165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4283520750594691291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a173f3bdfd86b42bb1b75f3953c412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstacleName: green wheel
