@@ -23,15 +23,14 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (playerInput.IsEnteringText()) return;
-        Debug.Log("isEnteringText");
 
         Vector2 inputVector = playerInput.GetMovementVectorNormalized();
 
         Vector3 moveDirection = transform.right * inputVector.x + transform.forward * inputVector.y;
-        moveDirection.y = 0; // Ignoriert die Y-Achse für Bewegung auf der Ebene
+        moveDirection.y = 0; // Ignoriert die Y-Achse fï¿½r Bewegung auf der Ebene
 
         transform.position += moveDirection * movingSpeed * Time.deltaTime;
-   
+
         isMoving = moveDirection != Vector3.zero;
 
 
