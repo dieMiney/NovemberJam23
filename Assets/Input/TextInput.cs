@@ -39,7 +39,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Move"",
                     ""type"": ""Value"",
-                    ""id"": ""0e69bc1d-d0f3-400d-9dc6-9fe043cc493f"",
+                    ""id"": ""c2314c2c-81f7-434d-91d1-395f8c212b65"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -48,11 +48,20 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
-                    ""id"": ""ade0bf88-e8de-4e98-a99e-2374d76c6892"",
+                    ""id"": ""02f0c8d4-952c-47ce-920d-910a944ce700"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseLook"",
+                    ""type"": ""Value"",
+                    ""id"": ""47cc7273-246c-42cb-835b-653911f68ccf"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -69,7 +78,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""WASD"",
-                    ""id"": ""d8b5cd71-578f-456a-8c7f-f8a3a07f8b94"",
+                    ""id"": ""e8495a76-9d3e-4cf7-91c8-60e91644d226"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -80,7 +89,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""9ac3dcb6-443f-4704-bf21-c8bff9488e77"",
+                    ""id"": ""960a841e-78cf-4eed-aad3-4363de01e2a3"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -91,7 +100,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""5a4b7cf3-3f62-43ee-8a5e-d39aae30a6f4"",
+                    ""id"": ""64119967-b154-49d4-9740-cb5c9b4487d0"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -102,7 +111,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""2c144410-1e2d-44ca-ace5-0de6102f19a5"",
+                    ""id"": ""7ccad821-b1e3-4a2a-8fe2-87daacdec536"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -113,7 +122,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""1a6409b6-89da-41db-9e6d-fcf658d8754d"",
+                    ""id"": ""d209241b-d5a4-4b05-9c7d-1f406576a52e"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -124,12 +133,23 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e96071fb-2b33-4702-a74a-8e2464eff5a6"",
+                    ""id"": ""dc8fa163-77a5-4996-8b2c-6ec079905671"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e58974a6-2849-42f8-8eaf-e8c41a4c04e3"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseLook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -143,6 +163,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
         m_Player_Enter = m_Player.FindAction("Enter", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_MouseLook = m_Player.FindAction("MouseLook", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +228,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Enter;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_MouseLook;
     public struct PlayerActions
     {
         private @TextInput m_Wrapper;
@@ -214,6 +236,7 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
         public InputAction @Enter => m_Wrapper.m_Player_Enter;
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @MouseLook => m_Wrapper.m_Player_MouseLook;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -232,6 +255,9 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @MouseLook.started += instance.OnMouseLook;
+            @MouseLook.performed += instance.OnMouseLook;
+            @MouseLook.canceled += instance.OnMouseLook;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -245,6 +271,9 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @MouseLook.started -= instance.OnMouseLook;
+            @MouseLook.performed -= instance.OnMouseLook;
+            @MouseLook.canceled -= instance.OnMouseLook;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -267,5 +296,6 @@ public partial class @TextInput: IInputActionCollection2, IDisposable
         void OnEnter(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnMouseLook(InputAction.CallbackContext context);
     }
 }
