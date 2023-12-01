@@ -6,16 +6,28 @@ public class PlayerInput : MonoBehaviour
 {
 
     private TextInput playerInputActions;
+    [SerializeField]
+    private Canvas finalScreen;
     private bool isEnteringText = false;
+
+    [SerializeField]
+    private FetchFromModel fetchFromModel;
+
+
 
     private void Awake()
     {
+
         playerInputActions = new TextInput();
         playerInputActions.Player.Enable();
 
+    }
+    void Start()
+    {
         // Event-Listener f�r die Texteingabe
-        playerInputActions.Player.Enter.started += _ => StartTextEntry();
-        playerInputActions.Player.Enter.canceled += _ => EndTextEntry();
+
+        playerInputActions.Player.Enter.started += _ => EnterPressed();
+        playerInputActions.Player.Escape.started += _ => EscapePressed();
     }
 
     // Diese Methode gibteinen normalisierten Bewegungsvektor basierend auf den Spieler-Eingaben zur�ck.
@@ -36,6 +48,34 @@ public class PlayerInput : MonoBehaviour
         return playerInputActions.Player.Jump.triggered;
     }
 
+    private void EscapePressed()
+    {
+        if (isEnteringText)
+        {
+            EndTextEntry();
+        }
+        else
+        {
+            finalScreen.gameObject.SetActive(!finalScreen.gameObject.activeSelf);
+        }
+        Cursor.lockState = finalScreen.gameObject.activeSelf ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = finalScreen.gameObject.activeSelf;
+        FindAnyObjectByType<MouseLook>().enabled = !finalScreen.gameObject.activeSelf;
+    }
+
+    private void EnterPressed()
+    {
+        fetchFromModel.EnterPressed();
+        if (isEnteringText)
+        {
+            EndTextEntry();
+        }
+        else
+        {
+            StartTextEntry();
+        }
+    }
+
     private void StartTextEntry()
     {
         isEnteringText = true;
@@ -54,6 +94,11 @@ public class PlayerInput : MonoBehaviour
     public bool IsEnteringText()
     {
         return isEnteringText;
+    }
+
+    public bool IsEscapePressed()
+    {
+        return finalScreen.gameObject.activeSelf;
     }
 }
 

@@ -114,8 +114,8 @@ public class FetchFromModel : MonoBehaviour
 {
     private string url = "http://localhost:8000/v1/chat/completions";
 
-    [SerializeField]
-    InputActionReference _enter;
+    public TextInput playerInputActions;
+
     [SerializeField]
     private GameObject inputFieldObject;
     [SerializeField]
@@ -286,27 +286,28 @@ public class FetchFromModel : MonoBehaviour
         chatLog.Add(new Message { role = "assistant", content = "I will move the blue cube. I dont want to scale it. Deal with it. { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
 
         // GetExchangeRates();
-        _enter.action.performed += ctx =>
+    }
+
+    public void EnterPressed()
+    {
+        switch (inputFieldObject.active)
         {
-            switch (inputFieldObject.active)
-            {
-                case true:
-                    if (inputFieldObject.GetComponent<TMP_InputField>().text != "")
-                    {
+            case true:
+                if (inputFieldObject.GetComponent<TMP_InputField>().text != "")
+                {
 
-                        chatLog.Add(new Message { role = "user", content = inputFieldObject.GetComponent<TMP_InputField>().text });
-                        SendModelRequest();
-                        inputFieldObject.GetComponent<TMP_InputField>().text = "";
-                    }
-                    inputFieldObject.SetActive(false);
+                    chatLog.Add(new Message { role = "user", content = inputFieldObject.GetComponent<TMP_InputField>().text });
+                    SendModelRequest();
+                    inputFieldObject.GetComponent<TMP_InputField>().text = "";
+                }
+                inputFieldObject.SetActive(false);
 
-                    break;
-                case false:
-                    inputFieldObject.SetActive(true);
-                    inputFieldObject.GetComponent<TMP_InputField>().ActivateInputField();
-                    break;
-            }
-        };
+                break;
+            case false:
+                inputFieldObject.SetActive(true);
+                inputFieldObject.GetComponent<TMP_InputField>().ActivateInputField();
+                break;
+        }
     }
 
     IEnumerator GetModels()
