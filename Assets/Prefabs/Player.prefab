@@ -598,10 +598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b4bbdcf873a4164eabf85f0d7820717, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: e55e4ef66043a8747866894761ac06be, type: 3}
-  title: NOTIFICATION TITLE
-  description: Notification description. Size of this area will change based on the
-    size of its content at runtime.
+  icon: {fileID: 21300000, guid: e07717fc47a510742ac0b11da205b050, type: 3}
+  title: Test
+  description: Test
   notificationAnimator: {fileID: 2047812232170201790}
   iconObj: {fileID: 7739044523542268370}
   titleObj: {fileID: 3604597853372577875}
@@ -610,10 +609,10 @@ MonoBehaviour:
   timer: 15
   useCustomContent: 0
   closeOnClick: 0
-  useStacking: 0
+  useStacking: 1
   isOn: 0
   startBehaviour: 0
-  closeBehaviour: 1
+  closeBehaviour: 0
   onOpen:
     m_PersistentCalls:
       m_Calls: []
@@ -628,7 +627,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2672180057358653245}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -1174,6 +1173,22 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.005381556
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.005381556
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.005381556
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.8663187
+      objectReference: {fileID: 0}
+    - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.97534406
       objectReference: {fileID: 0}
@@ -1191,7 +1206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2
+      value: -0.42431486
       objectReference: {fileID: 0}
     - target: {fileID: 3138861865761534235, guid: 63e1824ac8d421f4b8dc4e33f4d22b2b, type: 3}
       propertyPath: m_AnchoredPosition.y
