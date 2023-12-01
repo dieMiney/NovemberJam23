@@ -14,6 +14,16 @@ public class ModelResponse
 {
     public Choice[] choices;
 }
+public class ModelResponseModel
+{
+    public string id;
+    public string root;
+}
+
+public class ModelsResponse
+{
+    public ModelResponseModel[] data;
+}
 
 public class Message
 {
@@ -114,6 +124,7 @@ public class FetchFromModel : MonoBehaviour
     [SerializeField]
     private NotificationManager notificationManager;
     private List<Message> chatLog = new List<Message>();
+    private string modelName = "zephyr-7b-beta";
     public void SendModelRequest()
     {
         StartCoroutine(MakeRequest());
@@ -125,12 +136,14 @@ public class FetchFromModel : MonoBehaviour
     IEnumerator MakeRequest()
     {
         ModelRequest modelRequest = new ModelRequest
-        {
-            model = "D:\\Development\\python\\text-generation-webui-main\\models\\zephir-7b-beta",
+        { // fblgit/juanako-7b-UNA
+          //berkeley-nest/Starling-LM-7B-alpha
+          // zephyr-7b-alpha
+            model = modelName,
             messages = chatLog.ToArray(),
-            max_tokens = "64",
-            temperature = "0.6",
-            top_p = "1.0",
+            max_tokens = "128",
+            temperature = "0.45",
+            top_p = "0.8",
             top_k = "50",
             // stream = "false",
             presence_penalty = "0.0",
@@ -165,26 +178,10 @@ public class FetchFromModel : MonoBehaviour
 
             // remove { something } from answer
             var cleanedResponse = Regex.Replace(response.choices[0].message.content, @"\{(.+?)\}", "");
-
-            UnityWebRequest requestSetSentence = UnityWebRequest.Post("http://127.0.0.1:8002/voice", JsonConvert.SerializeObject(new { sentence = cleanedResponse }), "application/json");
-            yield return requestSetSentence.SendWebRequest();
-            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://127.0.0.1:8002/voice", AudioType.WAV))
-            {
-                yield return www.SendWebRequest();
-
-                if (www.result == UnityWebRequest.Result.ConnectionError)
-                {
-                    Debug.Log(www.error);
-                }
-                else
-                {
-                    AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
-                    // play audio
-                    AudioSource audioSource = GetComponent<AudioSource>();
-                    audioSource.clip = myClip;
-                    audioSource.Play();
-                }
-            }
+            StartCoroutine(voiceRequest(cleanedResponse));
+            notificationManager.title = "AI";
+            notificationManager.description = cleanedResponse;
+            notificationManager.Open();
 
             if (gameAction == null)
             {
@@ -196,9 +193,7 @@ public class FetchFromModel : MonoBehaviour
             }
             else
             {
-                notificationManager.title = "AI";
-                notificationManager.description = cleanedResponse;
-                notificationManager.OpenNotification();
+
                 Debug.Log($"Objects: {gameAction.Objects}, Operation: {gameAction.Operation}, Value: {gameAction.Value}");
                 foreach (var obstacle in obstacles.Children)
                 {
@@ -238,6 +233,30 @@ public class FetchFromModel : MonoBehaviour
         yield return null;
     }
 
+    private IEnumerator voiceRequest(string cleanedResponse)
+    {
+        UnityWebRequest requestSetSentence = UnityWebRequest.Post("http://127.0.0.1:8002/voice", JsonConvert.SerializeObject(new { sentence = cleanedResponse }), "application/json");
+        yield return requestSetSentence.SendWebRequest();
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("http://127.0.0.1:8002/voice", AudioType.WAV))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
+                // play audio
+                AudioSource audioSource = GetComponent<AudioSource>();
+                audioSource.clip = myClip;
+                audioSource.Play();
+            }
+        }
+        yield return null;
+    }
+
     private static GameAction ParseGameAction(string input)
     {
         Match match = Regex.Match(input, @"\{(.+?)\}");
@@ -253,6 +272,8 @@ public class FetchFromModel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // get available models
+        StartCoroutine(GetModels());
 
         inputFieldObject.SetActive(false);
         // Debug.Log(obstacles.Children.Count);
@@ -262,7 +283,7 @@ public class FetchFromModel : MonoBehaviour
         Debug.Log("system message: " + finalSysteMessage);
         chatLog.Add(new Message { role = "system", content = finalSysteMessage });
         chatLog.Add(new Message { role = "user", content = "Hello. Please move the blue cube a little bit and scale it by half." });
-        chatLog.Add(new Message { role = "assistant", content = "I can only do one thing, but here: Watch and learn. Let the blue cube move! { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
+        chatLog.Add(new Message { role = "assistant", content = "I will move the blue cube. I dont want to scale it. Deal with it. { \"objects\": \"blue cube\", \"operation\": \"TRANSLATE\", \"value\": 2 }" });
 
         // GetExchangeRates();
         _enter.action.performed += ctx =>
@@ -286,6 +307,26 @@ public class FetchFromModel : MonoBehaviour
                     break;
             }
         };
+    }
+
+    IEnumerator GetModels()
+    {
+        UnityWebRequest request = UnityWebRequest.Get("http://localhost:8000/v1/models");
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.Log(request.error); // model worker not reachable
+        }
+        else
+        {
+            Debug.Log("Received" + request.downloadHandler.text);
+            // derserialize json
+            var response = JsonConvert.DeserializeObject<ModelsResponse>(request.downloadHandler.text);
+            Debug.Log(response.data[0].id);
+            modelName = response.data[0].id;
+        }
+        yield return null;
     }
 
     // Update is called once per frame
