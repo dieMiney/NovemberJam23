@@ -20,9 +20,10 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         if (playerInput.IsEnteringText()) return;
+        Debug.Log("isEnteringText");
 
         Vector2 inputVector = playerInput.GetMovementVectorNormalized();
 

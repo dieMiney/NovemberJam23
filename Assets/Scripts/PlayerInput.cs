@@ -6,7 +6,7 @@ public class PlayerInput : MonoBehaviour
 {
 
     private TextInput playerInputActions;
-    private bool isEnteringText = false;
+    public bool isEnteringText = false;
 
     private void Awake()
     {
