@@ -122,7 +122,7 @@ public class FetchFromModel : MonoBehaviour
     private Obstacles obstacles;
 
     [SerializeField]
-    private NotificationManager notificationManager;
+    private TMP_Text notificationManager;
     private List<Message> chatLog = new List<Message>();
     private string modelName = "zephyr-7b-beta";
     public void SendModelRequest()
@@ -179,9 +179,7 @@ public class FetchFromModel : MonoBehaviour
             // remove { something } from answer
             var cleanedResponse = Regex.Replace(response.choices[0].message.content, @"\{(.+?)\}", "");
             StartCoroutine(voiceRequest(cleanedResponse));
-            notificationManager.title = "AI";
-            notificationManager.description = cleanedResponse;
-            notificationManager.Open();
+            notificationManager.SetText(cleanedResponse);
 
             if (gameAction == null)
             {
