@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
-
     private TextInput playerInputActions;
     [SerializeField]
     private Canvas finalScreen;
@@ -15,21 +14,16 @@ public class PlayerInput : MonoBehaviour
     [SerializeField]
     private FetchFromModel fetchFromModel;
 
-
-
     private void Awake()
     {
-
         playerInputActions = new TextInput();
         playerInputActions.Player.Enable();
         playerInputActions.Player.Jump.performed += OnJumpPerformed;
-
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
         jumpPressed = true;
-        Debug.Log("Jump performed");
     }
 
    /* private void OnEnable()
@@ -44,21 +38,14 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
-        // Event-Listener f�r die Texteingabe
-
+        // Event-Listener for text input
         playerInputActions.Player.Enter.started += _ => EnterPressed();
         playerInputActions.Player.Escape.started += _ => EscapePressed();
     }
-
-    // Diese Methode gibteinen normalisierten Bewegungsvektor basierend auf den Spieler-Eingaben zur�ck.
     public Vector2 GetMovementVectorNormalized()
     {
-        // Liest den Bewegungsvektor, der durch die Spieler-Eingaben bestimmt wird.
         Vector2 inputVector = playerInputActions.Player.Move.ReadValue<Vector2>();
-
-        // Normalisiert den Vektor, um sicherzustellen, dass die Bewegungsgeschwindigkeit konstant bleibt.
         inputVector = inputVector.normalized;
-        // Debug.Log(inputVector); // Gibt den Vektor zur �berpr�fung in die Konsole aus.
         return inputVector;
     }
 
@@ -68,10 +55,8 @@ public class PlayerInput : MonoBehaviour
         if (jumpPressed)
         {
             jumpPressed = false;
-            Debug.Log("JumpisTriggered");
             return true;
         }
-       // return playerInputActions.Player.Jump.triggered;
        return false;
     }
 
@@ -106,14 +91,14 @@ public class PlayerInput : MonoBehaviour
     private void StartTextEntry()
     {
         isEnteringText = true;
-        // Deaktivieren anderer Aktionen
+        // deactivate movement actions
         playerInputActions.Player.Move.Disable();
         playerInputActions.Player.Jump.Disable();
     }
     private void EndTextEntry()
     {
         isEnteringText = false;
-        // Aktivieren anderer Aktionen
+        // activate movement actions
         playerInputActions.Player.Move.Enable();
         playerInputActions.Player.Jump.Enable();
     }

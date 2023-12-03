@@ -22,16 +22,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        Debug.Log("Is Grounded " + isGrounded);
         if (playerInput.IsEnteringText()) return;
 
         Vector2 inputVector = playerInput.GetMovementVectorNormalized();
-
         Vector3 moveDirection = transform.right * inputVector.x + transform.forward * inputVector.y;
-        moveDirection.y = 0; // Ignoriert die Y-Achse f�r Bewegung auf der Ebene
-
+        moveDirection.y = 0; 
         transform.position += moveDirection * movingSpeed * Time.deltaTime;
-
         isMoving = moveDirection != Vector3.zero;
 
         //JumpLogic
@@ -39,7 +35,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
-            Debug.Log(isGrounded);
         }
     }
 
@@ -56,5 +51,4 @@ public class PlayerController : MonoBehaviour
     {
         return isMoving;
     }
-
 }
