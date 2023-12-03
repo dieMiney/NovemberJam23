@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerInput : MonoBehaviour
     [SerializeField]
     private Canvas finalScreen;
     private bool isEnteringText = false;
+    private bool jumpPressed = false;
 
     [SerializeField]
     private FetchFromModel fetchFromModel;
@@ -20,8 +22,26 @@ public class PlayerInput : MonoBehaviour
 
         playerInputActions = new TextInput();
         playerInputActions.Player.Enable();
+        playerInputActions.Player.Jump.performed += OnJumpPerformed;
 
     }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        jumpPressed = true;
+        Debug.Log("Jump performed");
+    }
+
+   /* private void OnEnable()
+    {
+        playerInputActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerInputActions.Disable();
+    }*/
+
     void Start()
     {
         // Event-Listener f�r die Texteingabe
@@ -45,7 +65,14 @@ public class PlayerInput : MonoBehaviour
     // Check if Jumpaction is activ
     public bool IsJumping()
     {
-        return playerInputActions.Player.Jump.triggered;
+        if (jumpPressed)
+        {
+            jumpPressed = false;
+            Debug.Log("JumpisTriggered");
+            return true;
+        }
+       // return playerInputActions.Player.Jump.triggered;
+       return false;
     }
 
     private void EscapePressed()

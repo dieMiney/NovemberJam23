@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private bool isMoving;
-    private bool isGrounded;
+    private bool isGrounded = true;
 
     private void Awake()
     {
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
+        Debug.Log("Is Grounded " + isGrounded);
         if (playerInput.IsEnteringText()) return;
 
         Vector2 inputVector = playerInput.GetMovementVectorNormalized();
@@ -33,12 +34,12 @@ public class PlayerController : MonoBehaviour
 
         isMoving = moveDirection != Vector3.zero;
 
-
         //JumpLogic
         if (playerInput.IsJumping() && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
+            Debug.Log(isGrounded);
         }
     }
 
